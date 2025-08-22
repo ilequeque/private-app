@@ -45,9 +45,31 @@
       transition:transform .15s ease, box-shadow .2s ease;
     }
     .upload:active{transform:scale(.98)}
-    .preview{
-      margin:18px auto 0;display:block;max-width:220px;width:100%;
-      border-radius:16px;box-shadow:0 8px 24px rgba(0,0,0,.2)
+    .preview-wrap {
+      margin: 20px auto 0;
+      width: 100%;
+      max-width: 260px;
+      border-radius: 18px;
+      padding: 10px;
+      background: rgba(255, 255, 255, .14);
+      border: 1px solid rgba(255, 255, 255, .22);
+      box-shadow: 0 10px 28px rgba(0, 0, 0, .18);
+      backdrop-filter: saturate(140%) blur(6px);
+      opacity: 0;
+      transform: translateY(6px);
+      transition: opacity .25s ease, transform .25s ease;
+    }
+    .preview-wrap.show {
+      opacity: 1;
+      transform: none;
+    }
+    .preview {
+      width: 100%;
+      aspect-ratio: 4 / 5;   /* портретная пропорция */
+      object-fit: cover;     /* без искажений */
+      border-radius: 12px;
+      display: block;
+      box-shadow: 0 8px 20px rgba(0,0,0,.18);
     }
 
     button.primary{
@@ -106,7 +128,9 @@
     <label class="upload" for="photoInput">📸 Загрузить фото</label>
     <input id="photoInput" type="file" accept="image/*" />
 
-    <img id="preview" class="preview" alt="Предпросмотр" hidden />
+    <div class="preview-wrap" id="previewWrap" hidden>
+      <img id="preview" class="preview" alt="Предпросмотр" />
+    </div>
 
     <button id="analyzeBtn" class="primary" style="display:none;">▶️ Начать анализ</button>
 
@@ -131,6 +155,22 @@
     const loading = document.getElementById('loading');
     const result = document.getElementById('result');
     const nextBtn = document.getElementById('nextBtn');
+    const previewWrap = document.getElementById('previewWrap');
+    photoInput.addEventListener('change', () => {
+      const file = photoInput.files?.[0];
+      if (!file) return;
+
+      preview.src = URL.createObjectURL(file);
+
+      // показываем обёртку с плавным появлением
+      previewWrap.hidden = false;
+      requestAnimationFrame(() => previewWrap.classList.add('show'));
+
+      analyzeBtn.style.display = 'inline-block';
+      result.style.display = 'none';
+      nextBtn.style.display = 'none';
+      loading.hidden = true;
+    });
 
     photoInput.addEventListener('change', () => {
       const file = photoInput.files?.[0];
