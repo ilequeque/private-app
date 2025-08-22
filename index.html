@@ -2,83 +2,127 @@
 <html lang="ru">
 <head>
   <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>AI Crush Analyzer 💘</title>
   <style>
-    body {
-      background: linear-gradient(135deg, #ffb6c1, #ffa07a);
-      font-family: 'Segoe UI', sans-serif;
-      color: white;
-      text-align: center;
-      padding: 40px;
+    :root{
+      --bg1:#ffb6c1; --bg2:#ffa07a; --accent:#ff4b7d; --text:#ffffff;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      min-height:100dvh;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-family:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial;
+      color:var(--text);
+      background:linear-gradient(135deg,var(--bg1),var(--bg2));
+      padding:40px;
+    }
+    .card{
+      width:100%;
+      max-width:720px;
+      background:rgba(255,255,255,.12);
+      backdrop-filter:saturate(140%) blur(8px);
+      border:1px solid rgba(255,255,255,.2);
+      border-radius:28px;
+      padding:28px;
+      box-shadow:0 20px 40px rgba(0,0,0,.15);
+      text-align:center;
+    }
+    h1{margin:0 0 8px;font-size:32px}
+    p.lead{margin:0 0 20px;opacity:.9}
+
+    /* uploader */
+    input[type=file]{display:none}
+    .upload{
+      display:inline-flex;align-items:center;gap:10px;
+      background:#fff;color:var(--accent);
+      border:none;border-radius:999px;
+      padding:14px 22px;font-weight:700;font-size:16px;cursor:pointer;
+      box-shadow:0 8px 20px rgba(0,0,0,.15);
+      transition:transform .15s ease, box-shadow .2s ease;
+    }
+    .upload:active{transform:scale(.98)}
+    .preview{
+      margin:18px auto 0;display:block;max-width:220px;width:100%;
+      border-radius:16px;box-shadow:0 8px 24px rgba(0,0,0,.2)
     }
 
-    h1 { font-size: 2.2em; }
-    label.upload {
-      background: white;
-      color: #ff4b7d;
-      padding: 15px 30px;
-      border-radius: 40px;
-      cursor: pointer;
-      font-weight: bold;
-      font-size: 18px;
-      display: inline-block;
-      margin-top: 20px;
+    button.primary{
+      margin-top:16px;
+      background:var(--accent);color:#fff;border:none;border-radius:999px;
+      padding:14px 22px;font-weight:800;font-size:16px;cursor:pointer;
+      box-shadow:0 8px 22px rgba(255,75,125,.45);
+      transition:transform .15s ease, box-shadow .2s ease;
+    }
+    button.primary:active{transform:scale(.98)}
+
+    .loading{margin-top:18px;font-size:18px;letter-spacing:.3px;animation:blink 1s infinite}
+    @keyframes blink{0%,100%{opacity:1}50%{opacity:.35}}
+
+    .result{
+      display:none;margin-top:24px;padding:18px;border-radius:18px;
+      background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.22);
+      animation:fadeIn .5s ease forwards
+    }
+    @keyframes fadeIn{from{opacity:0;translate:0 6px}to{opacity:1;translate:0 0}}
+    .result .title{font-size:24px;font-weight:900;margin-bottom:6px}
+    .result .stats{font-size:16px;line-height:1.6}
+
+    .next{
+      margin-top:18px;display:none
     }
 
-    input[type="file"] { display: none; }
-    img#preview {
-      margin-top: 20px;
-      max-width: 200px;
-      border-radius: 20px;
-      box-shadow: 0 0 15px rgba(0,0,0,0.2);
+    /* A11y: если у пользователя снижена анимация — убираем */
+    @media (prefers-reduced-motion:reduce){
+      *{animation:none !important;transition:none !important}
     }
 
-    button {
-      margin-top: 20px;
-      padding: 15px 30px;
-      font-size: 18px;
-      border: none;
-      border-radius: 40px;
-      background: #ff4b7d;
-      color: white;
-      font-weight: bold;
-      cursor: pointer;
+    /* Mobile adaptations */
+    @media (max-width:768px){
+      body{padding:20px}
+      .card{padding:20px;border-radius:22px}
+      h1{font-size:26px}
+      .upload,button.primary{width:100%;max-width:420px;justify-content:center}
+      .preview{max-width:180px}
+      .result .title{font-size:22px}
+      .result .stats{font-size:15px}
+      .next{width:100%}
     }
 
-    .loading { font-size: 1.5em; margin-top: 30px; animation: blink 1s infinite; }
-    @keyframes blink { 0%,100% {opacity: 1;} 50% {opacity: 0.3;} }
-
-    #result { display: none; margin-top: 40px; animation: fadeIn 1s ease forwards; }
-    @keyframes fadeIn { from {opacity: 0;} to {opacity: 1;} }
-
-    .highlight { font-size: 2em; font-weight: bold; margin-bottom: 10px; }
-    .stats { font-size: 1.2em; }
-
-    #nextBtn { margin-top: 30px; display: none; }
+    @media (max-width:420px){
+      h1{font-size:22px}
+      .preview{max-width:160px}
+    }
   </style>
 </head>
 <body>
+  <main class="card">
+    <h1>AI Crush Analyzer 💘</h1>
+    <p class="lead">Загрузи фото — и узнай свои показатели 😎</p>
 
-  <h1>AI Crush Analyzer 💘</h1>
-  <p>Загрузи фото — и узнай свои показатели 😎</p>
+    <label class="upload" for="photoInput">📸 Загрузить фото</label>
+    <input id="photoInput" type="file" accept="image/*" />
 
-  <label class="upload" for="photoInput">📸 Загрузить Фото</label>
-  <input type="file" id="photoInput" accept="image/*" />
-  <div><img id="preview" hidden /></div>
+    <img id="preview" class="preview" alt="Предпросмотр" hidden />
 
-  <button id="analyzeBtn" style="display:none;">▶️ Начать анализ</button>
-  <div class="loading" id="loading" hidden>🤖 Анализ внешности...</div>
+    <button id="analyzeBtn" class="primary" style="display:none;">▶️ Начать анализ</button>
 
-  <div id="result">
-    <div class="highlight" id="mainResult">💯 BADDY ENERGY DETECTED</div>
-    <div class="stats" id="details">
-      🔥 Hotness Level: 10/10<br/>
-      🧠 Style IQ: OFF THE CHARTS<br/>
-      💋 Swipe Magnet: IRRESISTIBLE
-    </div>
-  </div>
+    <div id="loading" class="loading" hidden>🤖 Анализ внешности...</div>
 
-  <button id="nextBtn" onclick="location.href='proposal.html'">А что дальше? 💌</button>
+    <section id="result" class="result" aria-live="polite">
+      <div class="title">💯 BADDY ENERGY DETECTED</div>
+      <div class="stats">
+        🔥 Hotness Level: 1000000/10<br>
+        🧠 Style IQ: OFF THE CHARTS<br>
+        💋 Swipe Magnet: IRRESISTIBLE
+      </div>
+    </section>
+
+    <button id="nextBtn" class="primary next" onclick="location.href='proposal.html'">А что дальше? 💌</button>
+  </main>
 
   <script>
     const photoInput = document.getElementById('photoInput');
@@ -88,16 +132,15 @@
     const result = document.getElementById('result');
     const nextBtn = document.getElementById('nextBtn');
 
-    photoInput.addEventListener('change', function () {
-      const file = this.files[0];
-      if (file) {
-        preview.src = URL.createObjectURL(file);
-        preview.hidden = false;
-        analyzeBtn.style.display = 'inline-block';
-        result.style.display = 'none';
-        loading.hidden = true;
-        nextBtn.style.display = 'none';
-      }
+    photoInput.addEventListener('change', () => {
+      const file = photoInput.files?.[0];
+      if (!file) return;
+      preview.src = URL.createObjectURL(file);
+      preview.hidden = false;
+      analyzeBtn.style.display = 'inline-block';
+      result.style.display = 'none';
+      nextBtn.style.display = 'none';
+      loading.hidden = true;
     });
 
     analyzeBtn.addEventListener('click', () => {
@@ -111,9 +154,8 @@
         result.style.display = 'block';
         analyzeBtn.disabled = false;
         nextBtn.style.display = 'inline-block';
-      }, 3000);
+      }, 2000);
     });
   </script>
-
 </body>
 </html>
