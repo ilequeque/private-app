@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <title>AI Crush Analyzer 💘</title>
+  <style>
+    body {
+      background: linear-gradient(135deg, #ffb6c1, #ffa07a);
+      font-family: 'Segoe UI', sans-serif;
+      color: white;
+      text-align: center;
+      padding: 40px;
+    }
+
+    h1 { font-size: 2.2em; }
+    label.upload {
+      background: white;
+      color: #ff4b7d;
+      padding: 15px 30px;
+      border-radius: 40px;
+      cursor: pointer;
+      font-weight: bold;
+      font-size: 18px;
+      display: inline-block;
+      margin-top: 20px;
+    }
+
+    input[type="file"] { display: none; }
+    img#preview {
+      margin-top: 20px;
+      max-width: 200px;
+      border-radius: 20px;
+      box-shadow: 0 0 15px rgba(0,0,0,0.2);
+    }
+
+    button {
+      margin-top: 20px;
+      padding: 15px 30px;
+      font-size: 18px;
+      border: none;
+      border-radius: 40px;
+      background: #ff4b7d;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .loading { font-size: 1.5em; margin-top: 30px; animation: blink 1s infinite; }
+    @keyframes blink { 0%,100% {opacity: 1;} 50% {opacity: 0.3;} }
+
+    #result { display: none; margin-top: 40px; animation: fadeIn 1s ease forwards; }
+    @keyframes fadeIn { from {opacity: 0;} to {opacity: 1;} }
+
+    .highlight { font-size: 2em; font-weight: bold; margin-bottom: 10px; }
+    .stats { font-size: 1.2em; }
+
+    #nextBtn { margin-top: 30px; display: none; }
+  </style>
+</head>
+<body>
+
+  <h1>AI Crush Analyzer 💘</h1>
+  <p>Загрузи фото — и узнай свои показатели 😎</p>
+
+  <label class="upload" for="photoInput">📸 Загрузить Фото</label>
+  <input type="file" id="photoInput" accept="image/*" />
+  <div><img id="preview" hidden /></div>
+
+  <button id="analyzeBtn" style="display:none;">▶️ Начать анализ</button>
+  <div class="loading" id="loading" hidden>🤖 Анализ внешности...</div>
+
+  <div id="result">
+    <div class="highlight" id="mainResult">💯 BADDY ENERGY DETECTED</div>
+    <div class="stats" id="details">
+      🔥 Hotness Level: 10/10<br/>
+      🧠 Style IQ: OFF THE CHARTS<br/>
+      💋 Swipe Magnet: IRRESISTIBLE
+    </div>
+  </div>
+
+  <button id="nextBtn" onclick="location.href='proposal.html'">А что дальше? 💌</button>
+
+  <script>
+    const photoInput = document.getElementById('photoInput');
+    const preview = document.getElementById('preview');
+    const analyzeBtn = document.getElementById('analyzeBtn');
+    const loading = document.getElementById('loading');
+    const result = document.getElementById('result');
+    const nextBtn = document.getElementById('nextBtn');
+
+    photoInput.addEventListener('change', function () {
+      const file = this.files[0];
+      if (file) {
+        preview.src = URL.createObjectURL(file);
+        preview.hidden = false;
+        analyzeBtn.style.display = 'inline-block';
+        result.style.display = 'none';
+        loading.hidden = true;
+        nextBtn.style.display = 'none';
+      }
+    });
+
+    analyzeBtn.addEventListener('click', () => {
+      analyzeBtn.disabled = true;
+      loading.hidden = false;
+      result.style.display = 'none';
+      nextBtn.style.display = 'none';
+
+      setTimeout(() => {
+        loading.hidden = true;
+        result.style.display = 'block';
+        analyzeBtn.disabled = false;
+        nextBtn.style.display = 'inline-block';
+      }, 3000);
+    });
+  </script>
+
+</body>
+</html>
