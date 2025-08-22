@@ -31,7 +31,7 @@
 
     .buttons{
       display:flex;gap:14px;justify-content:center;align-items:center;flex-wrap:wrap;
-      position:relative;min-height:90px;
+      position:relative;min-height:120px
     }
     .btn{
       padding:14px 22px;border:none;border-radius:999px;cursor:pointer;font-weight:800;
@@ -68,14 +68,24 @@
         </p>
 
     <div class="buttons">
-      <button class="btn yes" onclick="alert('Отличный выбор 😍')">Да 💖</button>
+      <button class="btn yes" onclick="handleYes()">Да 💖</button>
       <button id="noBtn" class="btn no">Нет 🙃</button>
     </div>
   </main>
 
   <script>
-    const noBtn = document.getElementById('noBtn');
+    function handleYes() {
+        alert("Отличный выбор 😍");
+        // Пытаемся закрыть
+        window.close();
+        // Если нельзя закрыть, то редирект
+        setTimeout(() => {
+          window.location.href = "https://www.youtube.com/watch?v=dQw4w9WgXcQ";
+        }, 500);
+    }
 
+    const noBtn = document.getElementById('noBtn');
+    
     // Границы, чтобы кнопка не улетала за край карточки
     function getBounds(){
       const card = document.querySelector('.card').getBoundingClientRect();
@@ -89,7 +99,7 @@
     function moveButton(){
       const {maxX, maxY} = getBounds();
       const x = Math.floor(Math.random() * (maxX + 1));
-      const y = Math.floor(Math.random() * (maxY + 1));
+      const y = Math.floor(Math.random() * 80);
       noBtn.style.transform = `translate(${x}px, ${y}px)`;
     }
 
